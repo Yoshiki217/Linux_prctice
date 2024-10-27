@@ -20,20 +20,20 @@ ls -l
 ```text
 ls의 자세한 내용 출력 
 
-출력내용
+출력내용　（出力内容）
 -rw-r--r-- 1 root     root      3444 Jul  5  2023 adduser.conf
 ```
 
 ls -il | grep .conf
 ```test
-list 에서 .conf가 포함된 파일만 표시
+list 에서 .conf가 포함된 파일만 표시　（listから.confが含まれたファイルだけ表示）
 
 | -> command 를 구분하는 역할
 ```
 
 touch network_test 
 ```text
-텅 빈 파일 생성
+텅 빈 파일 생성 (空のファイル作成)
 ```
 ifconfig | grep inet > network_test
 ```text
