@@ -14,11 +14,11 @@ printenv [set값] : set값 표시
 ### ls
 ls -a (all)
 ```text
-. .. 를 포함한 모든 파일을 보여줌
+. .. 를 포함한 모든 파일을 보여줌　
 ```
 ls -l
 ```text
-ls의 자세한 내용 출력 
+ls의 자세한 내용 출력 （詳しい内容を出力）
 
 출력내용　（出力内容）
 -rw-r--r-- 1 root     root      3444 Jul  5  2023 adduser.conf
