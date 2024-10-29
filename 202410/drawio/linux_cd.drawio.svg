@@ -1,4 +1,4 @@
-<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="701px" height="531px" viewBox="-0.5 -0.5 701 531" content="&lt;mxfile&gt;&lt;diagram id=&quot;0LxwKd_Xn83TG1P_9StT&quot; name=&quot;Page-1&quot;&gt;1VbLcpswFP0aLZsByTy8DC5pFunKiy47MsjAjEBUiIDz9bkY8TI44ySk08548NW5V69zjjRCZJfWPyTN458iZBxhI6wR+Y4w3poOfBvg1AKObbdAJJOwhcwB2CcvTIOGRsskZMWkUAnBVZJPwUBkGQvUBKNSimpadhR8OmtOIzYD9gHlc/RXEqq4RV3LGPBHlkRxN7Np6ExKu2INFDENRTWCiI/ITgqh2iitd4w33HW8tP0ermT7hUmWqVs64LbDM+Wl3hvCNoeu3lHACLBAddK7tv+Uokt8K86a3EMBMXKQ1RvyEEX6n6Y5BNmhyM9tY02IdguFzbVr7abFk2VjKcosZM1+DUhXcaLYPqdBk63AnYDFKuXQMiGkPIkyiDk7DoM9M6lYfZVhs9cN/M5EypQ8QYnu4GiltdXNrl0NxrFtjcUj05CtBqk2a9QPPegJgZZ0WV6yJO8lk4cvVuqvQ7P2uwyNrxn67g7orrvhDnJk9A8gv68XreroZiR9gxLjSxyO3anFCZ5bfGMuWLy/zz9j8c0tFq//dQ4tMuUQG3MOTbLAobsChdYtFAbIJwhmg18f3HQY1zl8vIDs+QROj+F/dlY2Fzr352KkM17SuX9CfEZoeyb0U5KVdaOb76CthzwX+Ra6f0Ce3yCehdwd8l3kOQ0IqaaGvEGy+X6SV2D1glQy55Q4S5x+4P6B5vA6O+dGT1zivwI=&lt;/diagram&gt;&lt;/mxfile&gt;">
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="701px" height="531px" viewBox="-0.5 -0.5 701 531" content="&lt;mxfile&gt;&lt;diagram id=&quot;0LxwKd_Xn83TG1P_9StT&quot; name=&quot;Page-1&quot;&gt;1VbLbqMwFP0aL1uBHUi6LBnaWUxXWcxy5IADSAZTYwrp1/cSzMOBjNKWjqZSJK7PvX6dc+wYkW1aP0qax08iZBxhK6wR+YEwtm1iwadBji3iYNICkUxCXTQAu+SVaVD3i8okZIVRqITgKslNMBBZxgJlYFRKUZllB8HNWXMasQmwCyifor+TUMUtunGsAf/JkijuZrYtnUlpV6yBIqahqEYQ8RHZSiFUG6X1lvGGvI6Xtt/DhWy/MMkydU0H3HZ4obzUe0PY5dDVOwgYARaojnrX7nMpusRNcdLkHgqIlYOu3pCHKNJfmuYQZPsiP7WtJSHaLRQ21661mxYby8ZSlFnImv1akK7iRLFdToMmW4E9AYtVyqFlQ0h5EmUQc3YYBhvTqRl+YVKxegRpeh+ZSJmSRyjR2bVWWlvd7trVYBzX1Vg8Mg250yDVZo36oQc9IdCSzstL5uQ9Z3L/xUr9c2jSfpeh8SVD394C3XU33F6OjP4B5M/lokUd3Yykb1BifYnD8ca0OMFTi6/sGYv39/lnLL66xuL1/86hQ0wOsTXlsP/bHHO4WYBC5xoKA+QTBLPBrw+uOozLHD5eQPZ0As1j+M3OyupM5/5cjHTGczr3T4jPCO1OhP6VZGXd6Oav0Z2HvA3yHXT/gDw/b54q0GhQ8hda7ffTugCPZzSSKYtkPcfiB24caA7vsVNu9Kol/hs=&lt;/diagram&gt;&lt;/mxfile&gt;">
     <defs/>
     <g>
         <rect x="40" y="140" width="660" height="390" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
@@ -90,13 +90,13 @@
                     <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 368px; height: 1px; padding-top: 55px; margin-left: 1px;">
                         <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
                             <div style="display: inline-block; font-size: 30px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: all; white-space: normal; overflow-wrap: normal;">
-                                Linux 相対経路図
+                                Linux 相対path図
                             </div>
                         </div>
                     </div>
                 </foreignObject>
                 <text x="185" y="64" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="30px" text-anchor="middle">
-                    Linux 相対経路図
+                    Linux 相対path図
                 </text>
             </switch>
         </g>
