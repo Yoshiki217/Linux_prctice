@@ -1,8 +1,4 @@
-# Linux_prctice
-with mongal
+# Linux_Practice
+with azuma and monggal
 
-hello mongal look my discord
-
-again look my discord
-
-hi im monggal
+### Organize 2024 AWS Lectures in MongGaL's way.
