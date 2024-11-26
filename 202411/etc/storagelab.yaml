@@ -1,0 +1,213 @@
+Parameters:
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instances. Linked to AWS Parameter
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  LatestAmiId:
+    Description: (DO NOT CHANGE)
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+    AllowedValues:
+      - /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+
+Resources:
+# IAM Role Instance Profile
+  STGLabInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: STGLabInstanceRole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+
+  STGLabRoleForInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: STGLabRoleForInstances
+      Path: /
+      Roles:
+        - !Ref STGLabInstanceRole
+
+# VPC
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+     CidrBlock: 10.40.0.0/16
+     EnableDnsSupport: true
+     EnableDnsHostnames: true
+     Tags:
+        - Key: Name
+          Value: CH5-VPC
+
+  MyIGW:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: CH5-IGW
+
+  MyIGWAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref MyIGW
+      VpcId: !Ref MyVPC
+
+  MyPublicRT:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVPC
+      Tags:
+        - Key: Name
+          Value: CH5-Public-RT
+
+  MyDefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: MyIGWAttachment
+    Properties:
+      RouteTableId: !Ref MyPublicRT
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref MyIGW
+
+  MyPublicSN1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: 10.40.1.0/24
+      Tags:
+        - Key: Name
+          Value: CH5-Public-Subnet1
+
+  MyPublicSN2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      AvailabilityZone: !Select [ 2, !GetAZs '' ]
+      CidrBlock: 10.40.2.0/24
+      Tags:
+        - Key: Name
+          Value: CH5-Public-Subnet2
+
+  MyPublicSNRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref MyPublicRT
+      SubnetId: !Ref MyPublicSN1
+
+  MyPublicSNRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref MyPublicRT
+      SubnetId: !Ref MyPublicSN2
+
+# Security Group
+  MySG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable 
+      VpcId: !Ref MyVPC
+      Tags:
+        - Key: Name
+          Value: CH5-SG
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '80'
+        ToPort: '80'
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: '2049'
+        ToPort: '2049'
+        CidrIp: 10.40.0.0/16
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: icmp
+        FromPort: -1
+        ToPort: -1
+        CidrIp: 0.0.0.0/0
+
+# EC2 Instance
+  EC2STG1:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: !Ref LatestAmiId
+      IamInstanceProfile: STGLabRoleForInstances
+      KeyName: !Ref KeyName
+      Tags:
+        - Key: Name
+          Value: EC2-STG1
+      NetworkInterfaces:
+        - DeviceIndex: 0
+          SubnetId: !Ref MyPublicSN1
+          GroupSet:
+          - !Ref MySG
+          AssociatePublicIpAddress: true
+          PrivateIpAddress: 10.40.1.10
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            hostnamectl --static set-hostname EC2-STG1
+            echo "sudo su -" >> /home/ec2-user/.bashrc
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            ./aws/install --bin-dir /usr/bin --install-dir /usr/bin --update           
+            yum install httpd tree tmux amazon-efs-utils -y
+            systemctl start httpd && systemctl enable httpd
+            echo "<html><h1>Storage LAB - Web Server 1</h1></html>" > /var/www/html/index.html
+            EC2_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+            ROOT_DISK_ID=$(aws ec2 describe-volumes --region ap-northeast-2 --filters Name=attachment.instance-id,Values=$EC2_INSTANCE_ID --query 'Volumes[*].[VolumeId]' --output text)
+            aws ec2 create-tags --resources $ROOT_DISK_ID --tags Key=Name,Value="EC2-STG1_Root_Volume"
+
+  EC2STG2:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: !Ref LatestAmiId
+      IamInstanceProfile: STGLabRoleForInstances
+      KeyName: !Ref KeyName
+      Tags:
+        - Key: Name
+          Value: EC2-STG2
+      NetworkInterfaces:
+        - DeviceIndex: 0
+          SubnetId: !Ref MyPublicSN2
+          GroupSet:
+          - !Ref MySG
+          AssociatePublicIpAddress: true
+          PrivateIpAddress: 10.40.2.10
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            hostnamectl --static set-hostname EC2-STG2
+            echo "sudo su -" >> /home/ec2-user/.bashrc
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            ./aws/install --bin-dir /usr/bin --install-dir /usr/bin --update           
+            yum install httpd tree tmux amazon-efs-utils -y
+            systemctl start httpd && systemctl enable httpd
+            echo "<html><h1>Storage LAB - Web Server 2</h1></html>" > /var/www/html/index.html
+            EC2_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+            ROOT_DISK_ID=$(aws ec2 describe-volumes --region ap-northeast-2 --filters Name=attachment.instance-id,Values=$EC2_INSTANCE_ID --query 'Volumes[*].[VolumeId]' --output text)
+            aws ec2 create-tags --resources $ROOT_DISK_ID --tags Key=Name,Value="EC2-STG2_Root_Volume"
+
+Outputs:
+  EC2STG1IP:
+    Value: !GetAtt EC2STG1.PublicIp
+  EC2STG2IP:
+    Value: !GetAtt EC2STG2.PublicIp
